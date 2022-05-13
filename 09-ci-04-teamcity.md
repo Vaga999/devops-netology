@@ -3,6 +3,43 @@
 #### Подготовка к выполнению
 
 1. Поднимите инфраструктуру [teamcity](./teamcity/docker-compose.yml)
+```
+исправил в docker-compose.yml bind volumes на named volumes для решения ошибки с правами
+ps не удалять volumes!
+```
+```bash
+version: "3"
+services:
+  teamcity:
+    image: jetbrains/teamcity-server
+    volumes:
+#      - ~/teamcity/data/:/data/teamcity_server/datadir
+#      - ~/teamcity/logs/:/opt/teamcity/logs
+      - type: volume
+        source: data
+        target: /data/teamcity_server/datadir
+      - type: volume
+        source: data
+        target: /opt/teamcity/logs
+    ports:
+      - 8111:8111
+  teamcity-agent:
+    image: jetbrains/teamcity-agent
+    depends_on:
+      - teamcity
+    volumes:
+#      - ~/teamcity/agent/:/data/teamcity_agent/conf
+      - type: volume
+        source : data
+        target: /data/teamcity_agent/conf
+    environment:
+      SERVER_URL: "http://teamcity:8111"
+    
+volumes:
+    data:
+    logs:
+    agent:
+```
 2. Если хочется, можете создать свою собственную инфраструктуру на основе той технологии, которая нравится. Инструкция по установке из [документации](https://www.jetbrains.com/help/teamcity/installing-and-configuring-the-teamcity-server.html)
 3. Дождитесь запуска teamcity, выполните первоначальную настройку
 4. Авторизуйте агент
@@ -13,7 +50,9 @@
 1. Создайте новый проект в teamcity на основе fork
 2. Сделайте autodetect конфигурации
 3. Сохраните необходимые шаги, запустите первую сборку master'a
+![](pic/09-ci-04-teamcity-1.jpg)
 4. Поменяйте условия сборки: если сборка по ветке `master`, то должен происходит `mvn clean package`, иначе `mvn clean test`
+![](pic/09-ci-04-teamcity-2.jpg)
 5. Мигрируйте `build configuration` в репозиторий
 6. Создайте отдельную ветку `feature/add_reply` в репозитории
 7. Напишите новый метод для класса Welcomer: метод должен возвращать произвольную реплику, содержащую слово `hunter`
