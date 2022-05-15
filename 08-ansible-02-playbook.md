@@ -42,7 +42,7 @@ services:
 5. Запустите `ansible-lint site.yml` и исправьте ошибки, если они есть.
 6. Попробуйте запустить playbook на этом окружении с флагом `--check`.
 ```bash
-$ ansible-playbook -i ./inventory/prod.yml site.yml --check
+$ sudo ansible-playbook -i ./inventory/prod.yml site.yml --check
 [WARNING]: Found both group and host with same name: kibana
 
 PLAY [Install Java] **********************************************************************************************************************************************************************************************************
@@ -88,3 +88,12 @@ kibana                     : ok=4    changed=2    unreachable=0    failed=1    s
 4. Все переменные для нового play определите в отдельный файл `group_vars/logstash/vars.yml`.
 5. Logstash конфиг должен конфигурироваться в части ссылки на elasticsearch (можно взять, например его IP из facts или определить через vars).
 6. Дополните README.md, протестируйте playbook, выложите новую версию в github. В ответ предоставьте ссылку на репозиторий.
+```bash
+PLAY RECAP *****************************************************************************************************************************************************************************************************************************************************
+elastic                    : ok=11   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+kibana                     : ok=11   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+localhost                  : ok=5    changed=1    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+logstash                   : ok=11   changed=8    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+[README.md](https://github.com/Bora2k3/08-ansible-02-playbook/blob/main/playbook/README.md)  
+[playbook](https://github.com/Bora2k3/08-ansible-02-playbook/tree/main/playbook)
